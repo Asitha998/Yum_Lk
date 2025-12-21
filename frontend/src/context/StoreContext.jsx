@@ -8,6 +8,8 @@ const StoreContextProvider = (props) => {
   const url = "http://localhost:4000";
   const [token, setToken] = useState("");
   const [food_list, setFoodList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [avgRatings, setAvgRatings] = useState({});
 
   const addToCart = async (itemId) => {
     if (!cartItems[itemId]) {
@@ -61,6 +63,21 @@ const StoreContextProvider = (props) => {
     setFoodList(response.data.data);
   };
 
+  const fetchAvgRatings = async () => {
+    try {
+      const response = await axios.get(url + "/api/review/avg-ratings");
+      if (response.data?.success) {
+        const map = {};
+        (response.data.data || []).forEach((r) => {
+          map[r.foodId] = { avg: r.avgRating, count: r.count };
+        });
+        setAvgRatings(map);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const loadCartData = async (token) => {
     const response = await axios.post(
       url + "/api/cart/get",
@@ -73,6 +90,7 @@ const StoreContextProvider = (props) => {
   useEffect(() => {
     async function loadData() {
       await fetchFoodList();
+      await fetchAvgRatings();
       if (localStorage.getItem("token")) {
         setToken(localStorage.getItem("token"));
         await loadCartData(localStorage.getItem("token"));
@@ -92,6 +110,11 @@ const StoreContextProvider = (props) => {
     url,
     token,
     setToken,
+    searchQuery,
+    setSearchQuery,
+    fetchFoodList,
+    avgRatings,
+    fetchAvgRatings,
   };
 
   return (

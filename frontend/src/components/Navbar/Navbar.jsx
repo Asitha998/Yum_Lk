@@ -7,7 +7,14 @@ import { StoreContext } from "../../context/StoreContext";
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
 
-  const { getTotalCartAmount, token, setToken, getTotalCartQuantity } = useContext(StoreContext);
+  const {
+    getTotalCartAmount,
+    token,
+    setToken,
+    getTotalCartQuantity,
+    searchQuery,
+    setSearchQuery,
+  } = useContext(StoreContext);
 
   const navigate = useNavigate();
 
@@ -53,7 +60,19 @@ const Navbar = ({ setShowLogin }) => {
         </a>
       </ul>
       <div className="navbar-right">
-        <img src={assets.search_icon} alt="" />
+        <div className="navbar-search">
+          <img src={assets.search_icon} alt="" />
+          <div className="search-bar">
+            <img src={assets.search_icon} alt="" />
+            <input
+              type="text"
+              placeholder="Search here..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+
         <div className="navbar-search-icon">
           <Link to="/cart">
             <img src={assets.basket_icon} alt="" />
